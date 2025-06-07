@@ -99,7 +99,14 @@
     const characterImage = new Image();
     characterImage.src = 'onsen.png';
     characterImage.onerror = () => {
-      console.error("画像 'onsen.png' の読み込みに失敗しました。ファイル名やパスを確認してください。");
+      console.warn("画像 'onsen.png' の読み込みに失敗しました。代替画像 'onsen2.png' を読み込みます。");
+      characterImage.src = 'onsen2.png';
+      characterImage.onerror = () => {
+        console.error("代替画像 'onsen2.png' も読み込めませんでした。画像ファイルを確認してください。");
+        ctx.font = "24px sans-serif";
+        ctx.fillStyle = "red";
+        ctx.fillText("画像が読み込めませんでした。'onsen.png' または 'onsen2.png' を同じフォルダに置いてください。", 20, 100);
+      };
     };
 
     const draw = () => {
@@ -156,13 +163,7 @@
           playCount++;
 
           if (playCount >= maxPlays) {
-            let comment = "";
-            if (totalScore <= 4999) comment = "雑魚が";
-            else if (totalScore <= 5999) comment = "ばーか";
-            else if (totalScore <= 6899) comment = "俺に勝てると思うな";
-            else comment = "のりゃああああああああああああああああああ";
-            document.getElementById("finalScoreDisplay").innerText = "累積スコア: " + totalScore + "
-" + comment;
+            document.getElementById("finalScoreDisplay").innerText = "累積スコア: " + totalScore;
             document.getElementById("finalScoreDisplay").style.display = 'block';
             setTimeout(() => {
               document.getElementById("retryPrompt").style.display = 'block';
