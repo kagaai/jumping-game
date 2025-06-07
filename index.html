@@ -10,15 +10,8 @@
       background: #ccf0ff;
       font-family: sans-serif;
     }
-    #score {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 24px;
-      font-weight: bold;
-      z-index: 2;
-    }
-    #tapPrompt {
+    
+        #tapPrompt {
       position: absolute;
       bottom: 100px;
       width: 100%;
@@ -33,6 +26,23 @@
     #tapPrompt.hidden {
       display: none;
     }
+    #finalScoreDisplay, #retryPrompt {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 48px;
+      font-weight: bold;
+      color: black;
+      z-index: 3;
+      display: none;
+    }
+    #retryPrompt {
+      top: 55%;
+      font-size: 36px;
+      color: red;
+      cursor: pointer;
+    }
     canvas {
       display: block;
       position: absolute;
@@ -43,18 +53,12 @@
   </style>
 </head>
 <body>
-  <div id="score">スコア: 0</div>
-  <div id="tapPrompt">飛ばせ！</div>
+  
+    <div id="tapPrompt">飛ばせ！</div>
+  <div id="finalScoreDisplay"></div>
+  <div id="retryPrompt">終わらねえ！</div>
   <canvas id="gameCanvas"></canvas>
-
   <script>
-    // リファラー制限（例: https://example.com からのアクセスのみ許可）
-    const allowedReferrer = "https://kagaai.github.io/jumping-game/";
-    if (document.referrer && !document.referrer.startsWith(allowedReferrer)) {
-      document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:30vh;'>アクセスが許可されていません。</h1>";
-      throw new Error("Access denied: invalid referrer");
-    }
-
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -69,17 +73,21 @@
     const gravity = 0.6;
     const characterWidth = 150;
     const characterHeight = 200;
-    const groundY = canvas.height - 200;
+    let groundY = 0;
 
     let velocityY = 0;
-    let positionY = groundY;
+    let positionY = 0;
     let score = 0;
-    let peakY = positionY;
+    let totalScore = 0;
+    let playCount = 0;
+    let peakY = 0;
     let gaugeValue = 0;
     let gaugeSpeed = 0.01;
     let gaugeDirection = 1;
     let gameState = 'idle';
     let targetGauge = 0.5;
+
+    const maxPlays = 10;
 
     const characterImage = new Image();
     characterImage.src = 'onsen.png';
@@ -114,8 +122,8 @@
         ctx.strokeRect(gaugeX, gaugeY, gaugeWidth, gaugeHeight);
       }
 
-      document.getElementById("score").innerText = "スコア: " + Math.floor(score);
-    };
+      document.getElementById("score").innerText = "スコア: " + Math.floor(score) + "（残り: " + (maxPlays - playCount) + "）";
+          };
 
     const update = () => {
       if (gameState === 'charging') {
@@ -134,7 +142,16 @@
           positionY = groundY;
           gameState = 'idle';
           score = canvas.height - peakY;
-          peakY = groundY;
+          totalScore += Math.floor(score);
+          playCount++;
+
+          if (playCount >= maxPlays) {
+            document.getElementById("finalScoreDisplay").innerText = "累積スコア: " + totalScore;
+            document.getElementById("finalScoreDisplay").style.display = 'block';
+            setTimeout(() => {
+              document.getElementById("retryPrompt").style.display = 'block';
+            }, 2000);
+          }
         } else {
           if (positionY < peakY) peakY = positionY;
         }
@@ -146,7 +163,7 @@
 
     canvas.addEventListener("click", () => {
       document.getElementById('tapPrompt').classList.add('hidden');
-      if (gameState === 'idle') {
+      if (gameState === 'idle' && playCount < maxPlays) {
         score = 0;
         gaugeValue = 0;
         gaugeDirection = 1;
@@ -161,7 +178,17 @@
       }
     });
 
+    document.getElementById("retryPrompt").addEventListener("click", () => {
+      totalScore = 0;
+      playCount = 0;
+      document.getElementById("finalScoreDisplay").style.display = 'none';
+      document.getElementById("retryPrompt").style.display = 'none';
+    });
+
     characterImage.onload = () => {
+      groundY = canvas.height - 200;
+      positionY = groundY;
+      peakY = groundY;
       update();
     };
   </script>
