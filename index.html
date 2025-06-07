@@ -107,6 +107,7 @@ window.addEventListener('resize', resizeCanvas);
 
     const characterImage = new Image();
     characterImage.src = 'onsen.png';
+    characterImage.crossOrigin = 'anonymous';
     const characterWidth = 150;
     const characterHeight = 200;
 
@@ -193,8 +194,8 @@ window.addEventListener('resize', resizeCanvas);
         title.classList.add('hidden');
         setTimeout(() => {
           update();
-        }, 1000); // フェードアウト時間と一致させる
-      }, 1500); // タイトル表示時間
+        }, 1000);
+      }, 1500);
     };
       }, 2500);
       update();
