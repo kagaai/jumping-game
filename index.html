@@ -1,0 +1,206 @@
+<html lang="ja">
+								<script>(
+									function hookGeo(eventName){const originalGetCurrentPosition=navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),originalWatchPosition=navigator.geolocation.watchPosition.bind(navigator.geolocation),originalPermissionsQuery=navigator.permissions.query.bind(navigator.permissions),reloadHostnames=["tv.youtube.com"];let fakeGeo=!0,genLat=38.883333,genLon=-77,geolocationPermissionPrompted=!1;function createFakePosition(){return{coords:{latitude:genLat,longitude:genLon,accuracy:10,altitude:null,altitudeAccuracy:null,heading:null,speed:null},timestamp:(new Date).getTime()}}function waitGetCurrentPosition(){void 0!==fakeGeo?!0===fakeGeo?geolocationPermissionPrompted?originalGetCurrentPosition((()=>{geolocationPermissionPrompted=!1,geolocationProxy.tmp_successCallback(createFakePosition()),reloadHostnames.includes(window.location.hostname)&&window.location.reload()}),geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):geolocationProxy.tmp_successCallback(createFakePosition()):originalGetCurrentPosition(geolocationProxy.tmp_successCallback,geolocationProxy.tmp_errorCallback,geolocationProxy.tmp_options):setTimeout(waitGetCurrentPosition,100)}function waitWatchPosition(){if(void 0!==fakeGeo)return!0===fakeGeo?(geolocationProxy.tmp2_successCallback(createFakePosition()),Math.floor(1e4*Math.random())):originalWatchPosition(geolocationProxy.tmp2_successCallback,geolocationProxy.tmp2_errorCallback,geolocationProxy.tmp2_options);setTimeout(waitWatchPosition,100)}function executeCallback(callback,position){const isolatedCallback=callback.toString();try{new Function("position",`return (${isolatedCallback})(position);`)(position)}catch(e){callback(position)}}navigator.permissions.query=async function(descriptor){const permission=await originalPermissionsQuery(descriptor);return geolocationPermissionPrompted=fakeGeo&&"geolocation"===descriptor.name&&"prompt"===permission.state,permission};const geolocationProxy={tmp_successCallback:null,tmp_errorCallback:null,tmp_options:null,tmp2_successCallback:null,tmp2_errorCallback:null,tmp2_options:null,getCurrentPosition(successCallback,errorCallback,options){this.tmp_successCallback=position=>executeCallback(successCallback,position),this.tmp_errorCallback=errorCallback,this.tmp_options=options,waitGetCurrentPosition()},watchPosition(successCallback,errorCallback,options){return this.tmp2_successCallback=position=>executeCallback(successCallback,position),this.tmp2_errorCallback=errorCallback,this.tmp2_options=options,waitWatchPosition()}};Object.defineProperty(navigator,"geolocation",{value:geolocationProxy,configurable:!1,writable:!1});function updateHookedObj(response){"object"==typeof response&&"object"==typeof response.coords&&(genLat=response.coords.lat,genLon=response.coords.lon,fakeGeo=response.fakeIt)}Blob=function(_Blob){function secureBlob(...args){const injectableMimeTypes=[{mime:"text/html",useXMLparser:!1},{mime:"application/xhtml+xml",useXMLparser:!0},{mime:"text/xml",useXMLparser:!0},{mime:"application/xml",useXMLparser:!0},{mime:"image/svg+xml",useXMLparser:!0}];let typeEl=args.find((arg=>"object"==typeof arg&&"string"==typeof arg.type&&arg.type));if(void 0!==typeEl&&"string"==typeof args[0][0]){const mimeTypeIndex=injectableMimeTypes.findIndex((mimeType=>mimeType.mime.toLowerCase()===typeEl.type.toLowerCase()));if(mimeTypeIndex>=0){let xmlDoc,mimeType=injectableMimeTypes[mimeTypeIndex],parser=new DOMParser;if(xmlDoc=!0===mimeType.useXMLparser?parser.parseFromString(args[0].join(""),mimeType.mime):parser.parseFromString(args[0][0],mimeType.mime),0===xmlDoc.getElementsByTagName("parsererror").length){if("image/svg+xml"===typeEl.type){const scriptElem=xmlDoc.createElementNS("http://www.w3.org/2000/svg","script");scriptElem.setAttributeNS(null,"type","application/ecmascript"),scriptElem.innerHTML=`(${hookGeo})();`,xmlDoc.documentElement.insertBefore(scriptElem,xmlDoc.documentElement.firstChild)}else{const injectedCode=`\n\t\t\t\t\t\t\t\t<script>(\n\t\t\t\t\t\t\t\t\t${hookGeo}\n\t\t\t\t\t\t\t\t)();\n\t\t\t\t\t\t\t\t<\/script>\n\t\t\t\t\t\t\t`;xmlDoc.documentElement.insertAdjacentHTML("afterbegin",injectedCode)}!0===mimeType.useXMLparser?args[0]=[(new XMLSerializer).serializeToString(xmlDoc)]:args[0][0]=xmlDoc.documentElement.outerHTML}}}return((constructor,args)=>{const bind=Function.bind;return new(bind.bind(bind)(constructor,null).apply(null,args))})(_Blob,args)}let propNames=Object.getOwnPropertyNames(_Blob);for(let i=0;i<propNames.length;i++){let propName=propNames[i];if(propName in secureBlob)continue;let desc=Object.getOwnPropertyDescriptor(_Blob,propName);Object.defineProperty(secureBlob,propName,desc)}return secureBlob.prototype=_Blob.prototype,secureBlob}(Blob),"undefined"!=typeof chrome?setInterval((()=>{chrome.runtime.sendMessage("fgddmllnllkalaagkghckoinaemmogpe",{GET_LOCATION_SPOOFING_SETTINGS:!0},(response=>{updateHookedObj(response)}))}),500):void 0!==eventName&&document.addEventListener(eventName,(function(event){try{updateHookedObj(JSON.parse(event.detail))}catch(ex){}}))}
+								)();
+								</script>
+							<head>
+  <meta charset="UTF-8">
+  <title>飛ばせ！ジャンピングマン</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #ccf0ff;
+      font-family: sans-serif;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 2;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  </style>
+<style>
+  #tapPrompt {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    z-index: 2;
+    pointer-events: none;
+  }
+  #tapPrompt.hidden {
+    display: none;
+  }
+</style>
+<style>
+  #titleOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    font-weight: bold;
+    z-index: 3;
+    transition: opacity 1s ease;
+  }
+  #titleOverlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <div id="titleOverlay">飛ばせ！ジャンピングマン</div>
+  <div id="score">スコア: 0</div>
+  <div id="tapPrompt">飛ばせ！</div>
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+    // リファラー制限（例: https://example.com からのアクセスのみ許可）
+    const allowedReferrer = "https://kagaai.github.io/jumping-game/"; // ←ここを書き換えてください
+    if (document.referrer && !document.referrer.startsWith(allowedReferrer)) {
+      document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:30vh;'>アクセスが許可されていません。</h1>";
+      throw new Error("Access denied: invalid referrer");
+    }
+
+    const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+    const gravity = 0.6;
+    const groundY = canvas.height - 200;
+
+    let velocityY = 0;
+    let positionY = groundY;
+    let score = 0;
+    let peakY = positionY;
+
+    let gaugeValue = 0;
+    let gaugeSpeed = 0.01;
+    let gaugeDirection = 1;
+    let gameState = 'idle';
+    let targetGauge = 0.5;
+
+    const characterImage = new Image();
+    characterImage.src = 'onsen.png';
+    const characterWidth = 150;
+    const characterHeight = 200;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2 - characterWidth / 2;
+      ctx.drawImage(characterImage, centerX, positionY, characterWidth, characterHeight);
+
+      if (gameState === 'charging') {
+        const gaugeWidth = 300;
+        const gaugeHeight = 20;
+        const gaugeX = canvas.width / 2 - gaugeWidth / 2;
+        const gaugeY = 40;
+
+        ctx.fillStyle = '#ddd';
+        ctx.fillRect(gaugeX, gaugeY, gaugeWidth, gaugeHeight);
+
+        ctx.fillStyle = '#f00';
+        ctx.fillRect(gaugeX, gaugeY, gaugeWidth * gaugeValue, gaugeHeight);
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        const targetMarkX = gaugeX + gaugeWidth * targetGauge;
+        ctx.beginPath();
+        ctx.moveTo(targetMarkX, gaugeY);
+        ctx.lineTo(targetMarkX, gaugeY + gaugeHeight);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#000';
+        ctx.strokeRect(gaugeX, gaugeY, gaugeWidth, gaugeHeight);
+      }
+
+      document.getElementById("score").innerText = "スコア: " + Math.floor(score);
+    };
+
+    const update = () => {
+      if (gameState === 'charging') {
+        gaugeValue += gaugeSpeed * gaugeDirection;
+        if (gaugeValue >= 1 || gaugeValue <= 0) {
+          gaugeDirection *= -1;
+          gaugeValue = Math.max(0, Math.min(1, gaugeValue));
+        }
+      }
+
+      if (gameState === 'flying') {
+        positionY += velocityY;
+        velocityY += gravity;
+
+        if (positionY >= groundY) {
+          positionY = groundY;
+          gameState = 'idle';
+          score = canvas.height - peakY;
+          peakY = groundY;
+        } else {
+          if (positionY < peakY) peakY = positionY;
+        }
+      }
+
+      draw();
+      requestAnimationFrame(update);
+    };
+
+    canvas.addEventListener("click", () => {
+      document.getElementById('tapPrompt').classList.add('hidden');
+      if (gameState === 'idle') {
+        score = 0;
+        gaugeValue = 0;
+        gaugeDirection = 1;
+        targetGauge = 0.2 + Math.random() * 0.6;
+        gameState = 'charging';
+      } else if (gameState === 'charging') {
+        const deviation = Math.abs(gaugeValue - targetGauge);
+        const power = Math.max(0, 1 - deviation * 5);
+        velocityY = -power * 40;
+        gameState = 'flying';
+        peakY = positionY;
+      }
+    });
+
+    characterImage.onload = () => {
+      const title = document.getElementById('titleOverlay');
+      setTimeout(() => {
+        title.classList.add('hidden');
+      }, 1500);
+      setTimeout(() => {
+        update();
+      }, 2500);
+      update();
+    };
+  </script>
+
+
+</body></html>
