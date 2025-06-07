@@ -43,32 +43,9 @@
     display: none;
   }
 </style>
-<style>
-  #titleOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 48px;
-    font-weight: bold;
-    z-index: 3;
-    transition: opacity 1s ease;
-  }
-  #titleOverlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-</style>
 </head>
 <body>
-  <div id="titleOverlay">飛ばせ！ジャンピングマン</div>
-  <div id="score">スコア: 0</div>
+    <div id="score">スコア: 0</div>
   <div id="tapPrompt">飛ばせ！</div>
   <canvas id="gameCanvas"></canvas>
 
@@ -106,7 +83,7 @@ window.addEventListener('resize', resizeCanvas);
     let targetGauge = 0.5;
 
     const characterImage = new Image();
-    characterImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAByElEQVR4nO2aMQ7CMAxF/0oxgAlSgAlSgAmUgAmUgAmUgAmUgBFa+U4FcrTxkrz+p47MR2tQ3NS7kAUAAAAgDL2m8H0AVtbw3O8Vfz9e2pvIAexiTzAuW1x59lZQOIgAHZFiFMKqR/F0K7GMbRoFYM1C0M4RSggc7CUCBwIBAjx9ywQWcCG6n7AHnAcNnvoIs3zfjRktJwXRaMfK3VQZStI1yFlxL5bDwzA9ovzBCU12qqq5gt3UqSIRrcV3k8oa4qtYAJzWVrtLe7MnCrqv7ElEhnzQoI7mNUCIiyA7EW+yNkZcXFSsY0eSnvICVj6Un2qVb6UOdweXYO7AzGe9gd+txr07V9+HZ/09jVn71AgAAAMAzAf8AMqVYuqjoUlsAAAAASUVORK5CYII=';
+    characterImage.src = 'onsen.png';
     const characterWidth = 150;
     const characterHeight = 200;
 
@@ -188,13 +165,8 @@ window.addEventListener('resize', resizeCanvas);
     });
 
     characterImage.onload = () => {
-      const title = document.getElementById('titleOverlay');
-      setTimeout(() => {
-        title.classList.add('hidden');
-        setTimeout(() => {
-          update();
-        }, 1000);
-      }, 1500);
+      update();
+    };
     };
       }, 2500);
       update();
