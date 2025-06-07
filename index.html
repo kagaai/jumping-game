@@ -10,8 +10,15 @@
       background: #ccf0ff;
       font-family: sans-serif;
     }
-    
-        #tapPrompt {
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 2;
+    }
+    #tapPrompt {
       position: absolute;
       bottom: 100px;
       width: 100%;
@@ -53,8 +60,8 @@
   </style>
 </head>
 <body>
-  
-    <div id="tapPrompt">飛ばせ！</div>
+  <div id="score">スコア: 0</div>
+  <div id="tapPrompt">飛ばせ！</div>
   <div id="finalScoreDisplay"></div>
   <div id="retryPrompt">終わらねえ！</div>
   <canvas id="gameCanvas"></canvas>
@@ -123,7 +130,7 @@
       }
 
       document.getElementById("score").innerText = "スコア: " + Math.floor(score) + "（残り: " + (maxPlays - playCount) + "）";
-          };
+    };
 
     const update = () => {
       if (gameState === 'charging') {
@@ -192,5 +199,4 @@
       update();
     };
   </script>
-</body>
-</html>
+</
